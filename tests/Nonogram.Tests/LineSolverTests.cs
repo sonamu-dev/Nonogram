@@ -5,6 +5,21 @@ namespace Nonogram.Tests;
 public class LineSolverTests
 {
     [Fact]
+    public void Solve_EmptyClue_WithFilledCell_ReturnsContradiction()
+    {
+        CellState[] input = [CellState.Unknown, CellState.Filled, CellState.Unknown, CellState.Unknown, CellState.Unknown];
+
+        LineSolveResult result = LineSolver.Solve(
+            lineLength: 5,
+            clue: Array.Empty<int>(),
+            currentLine: input);
+
+        Assert.True(result.IsContradiction);
+        Assert.False(result.HasProgress);
+        Assert.Equal(input, result.UpdatedLine);
+    }
+
+    [Fact]
     public void Solve_EmptyClue_FillsAllCellsAsEmpty()
     {
         CellState[] input = [CellState.Unknown, CellState.Unknown, CellState.Unknown, CellState.Unknown, CellState.Unknown];
@@ -52,6 +67,23 @@ public class LineSolverTests
         Assert.True(result.HasProgress);
         Assert.Equal(
             [CellState.Unknown, CellState.Filled, CellState.Filled, CellState.Unknown, CellState.Empty],
+            result.UpdatedLine);
+    }
+
+    [Fact]
+    public void Solve_SingleBlockOverlap_AllUnknown_ResolvesCenterCell()
+    {
+        CellState[] input = [CellState.Unknown, CellState.Unknown, CellState.Unknown, CellState.Unknown, CellState.Unknown];
+
+        LineSolveResult result = LineSolver.Solve(
+            lineLength: 5,
+            clue: [3],
+            currentLine: input);
+
+        Assert.False(result.IsContradiction);
+        Assert.True(result.HasProgress);
+        Assert.Equal(
+            [CellState.Unknown, CellState.Unknown, CellState.Filled, CellState.Unknown, CellState.Unknown],
             result.UpdatedLine);
     }
 
@@ -148,5 +180,20 @@ public class LineSolverTests
         Assert.Equal(first.IsContradiction, second.IsContradiction);
         Assert.Equal(first.HasProgress, second.HasProgress);
         Assert.Equal(first.UpdatedLine, second.UpdatedLine);
+    }
+
+    [Fact]
+    public void Solve_AlreadyResolvedLine_HasNoProgress()
+    {
+        CellState[] input = [CellState.Filled, CellState.Filled, CellState.Empty, CellState.Empty, CellState.Filled];
+
+        LineSolveResult result = LineSolver.Solve(
+            lineLength: 5,
+            clue: [2, 1],
+            currentLine: input);
+
+        Assert.False(result.IsContradiction);
+        Assert.False(result.HasProgress);
+        Assert.Equal(input, result.UpdatedLine);
     }
 }
