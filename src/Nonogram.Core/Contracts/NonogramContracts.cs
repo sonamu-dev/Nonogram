@@ -1,3 +1,5 @@
+using Nonogram.Core.Domain;
+
 namespace Nonogram.Core.Contracts;
 
 public enum DifficultyGrade
@@ -9,10 +11,6 @@ public enum DifficultyGrade
 }
 
 public sealed record PuzzleSize(int Width, int Height);
-
-public sealed record PuzzleDefinition(
-    IReadOnlyList<IReadOnlyList<int>> RowHints,
-    IReadOnlyList<IReadOnlyList<int>> ColumnHints);
 
 public sealed record GenerationRequest(
     PuzzleSize Size,
