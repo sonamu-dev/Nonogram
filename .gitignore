@@ -1,0 +1,52 @@
+# Build outputs
+[Bb]in/
+[Oo]bj/
+out/
+artifacts/
+
+# Visual Studio / IDE
+.vs/
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+*.VC.db
+*.VC.VC.opendb
+
+# Rider / VS Code
+.idea/
+.vscode/
+
+# NuGet
+packages/
+*.nupkg
+*.snupkg
+project.assets.json
+project.nuget.cache
+
+# Test and coverage outputs
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+coverage/
+
+# Logs and temp files
+*.log
+*.tmp
+*.cache
+
+# WinUI / MSIX packaging outputs
+AppPackages/
+BundleArtifacts/
+*.pfx
+*.p12
+*.snk
+
+# Publish outputs
+publish/
+
+# OS generated files
+Thumbs.db
+Desktop.ini

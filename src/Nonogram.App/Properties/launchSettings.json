@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Nonogram.App (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "Nonogram.App (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

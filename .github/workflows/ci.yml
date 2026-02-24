@@ -1,0 +1,82 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - "feature/**"
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-test:
+    runs-on: windows-latest
+    env:
+      BASE_VERSION: 1.0.0
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Resolve project target and version
+        id: resolve
+        shell: pwsh
+        run: |
+          $solution = Get-ChildItem -Recurse -Filter *.sln | Select-Object -First 1
+          $project = Get-ChildItem -Recurse -Filter *.csproj | Select-Object -First 1
+
+          if ($solution) {
+            $target = $solution.FullName
+          } elseif ($project) {
+            $target = $project.FullName
+          } else {
+            $target = ""
+          }
+
+          $fullVersion = "$env:BASE_VERSION.${{ github.run_number }}"
+          "target=$target" >> $env:GITHUB_OUTPUT
+          "full_version=$fullVersion" >> $env:GITHUB_OUTPUT
+
+      - name: Show resolved version
+        shell: pwsh
+        run: |
+          Write-Host "Base Version: $env:BASE_VERSION"
+          Write-Host "Build Revision: ${{ github.run_number }}"
+          Write-Host "File/Package Version: ${{ steps.resolve.outputs.full_version }}"
+
+      - name: Restore
+        if: ${{ steps.resolve.outputs.target != '' }}
+        run: dotnet restore "${{ steps.resolve.outputs.target }}"
+
+      - name: Build
+        if: ${{ steps.resolve.outputs.target != '' }}
+        run: >
+          dotnet build "${{ steps.resolve.outputs.target }}"
+          --configuration Release
+          --no-restore
+          -p:Version=${{ env.BASE_VERSION }}
+          -p:FileVersion=${{ steps.resolve.outputs.full_version }}
+          -p:InformationalVersion=${{ steps.resolve.outputs.full_version }}+${{ github.sha }}
+
+      - name: Test
+        if: ${{ steps.resolve.outputs.target != '' }}
+        run: >
+          dotnet test "${{ steps.resolve.outputs.target }}"
+          --configuration Release
+          --no-build
+          --verbosity normal
+
+      - name: Skip message (no .sln/.csproj yet)
+        if: ${{ steps.resolve.outputs.target == '' }}
+        shell: pwsh
+        run: |
+          Write-Host "No .sln/.csproj found. Build/Test skipped."
