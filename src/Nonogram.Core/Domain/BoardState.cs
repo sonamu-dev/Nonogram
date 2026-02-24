@@ -2,7 +2,7 @@ namespace Nonogram.Core.Domain;
 
 public sealed class BoardState
 {
-    private readonly CellState[] cells;
+    private readonly CellState[] _cells;
 
     public BoardState(int width, int height, IReadOnlyList<CellState> cells)
     {
@@ -26,7 +26,7 @@ public sealed class BoardState
                 nameof(cells));
         }
 
-        this.cells = cells.ToArray();
+        _cells = cells.ToArray();
         Width = width;
         Height = height;
     }
@@ -40,13 +40,13 @@ public sealed class BoardState
         get
         {
             ValidateCoordinates(row, column);
-            return cells[GetIndex(row, column)];
+            return _cells[GetRowMajorIndex(row, column)];
         }
     }
 
-    public CellState[] ToArray() => cells.ToArray();
+    public CellState[] ToArray() => _cells.ToArray();
 
-    private int GetIndex(int row, int column) => (row * Width) + column;
+    private int GetRowMajorIndex(int row, int column) => (row * Width) + column;
 
     private void ValidateCoordinates(int row, int column)
     {

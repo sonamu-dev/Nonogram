@@ -12,8 +12,8 @@ public static class BoardSolver
             throw new ArgumentException("Puzzle and board dimensions must match.");
         }
 
-        int width = puzzle.Width;
-        int height = puzzle.Height;
+        int boardWidth = puzzle.Width;
+        int boardHeight = puzzle.Height;
 
         CellState[] workingCells = currentBoard.ToArray();
         bool madeAnyProgress = false;
@@ -25,40 +25,40 @@ public static class BoardSolver
         {
             bool progressedInPass = false;
 
-            for (int row = 0; row < height; row++)
+            for (int row = 0; row < boardHeight; row++)
             {
-                CellState[] rowLine = ReadRow(workingCells, width, row);
-                LineSolveResult rowResult = LineSolver.Solve(width, rowClues[row], rowLine);
+                CellState[] rowLine = ReadRow(workingCells, boardWidth, row);
+                LineSolveResult rowResult = LineSolver.Solve(boardWidth, rowClues[row], rowLine);
                 if (rowResult.IsContradiction)
                 {
                     return new BoardSolveResult(
-                        new BoardState(width, height, workingCells),
+                        new BoardState(boardWidth, boardHeight, workingCells),
                         HasProgress: madeAnyProgress,
                         IsContradiction: true,
                         ContradictionSource: $"Row {row}");
                 }
 
-                if (ApplyRow(workingCells, width, row, rowResult.UpdatedLine))
+                if (ApplyRow(workingCells, boardWidth, row, rowResult.UpdatedLine))
                 {
                     progressedInPass = true;
                     madeAnyProgress = true;
                 }
             }
 
-            for (int column = 0; column < width; column++)
+            for (int column = 0; column < boardWidth; column++)
             {
-                CellState[] columnLine = ReadColumn(workingCells, width, height, column);
-                LineSolveResult columnResult = LineSolver.Solve(height, columnClues[column], columnLine);
+                CellState[] columnLine = ReadColumn(workingCells, boardWidth, boardHeight, column);
+                LineSolveResult columnResult = LineSolver.Solve(boardHeight, columnClues[column], columnLine);
                 if (columnResult.IsContradiction)
                 {
                     return new BoardSolveResult(
-                        new BoardState(width, height, workingCells),
+                        new BoardState(boardWidth, boardHeight, workingCells),
                         HasProgress: madeAnyProgress,
                         IsContradiction: true,
                         ContradictionSource: $"Column {column}");
                 }
 
-                if (ApplyColumn(workingCells, width, height, column, columnResult.UpdatedLine))
+                if (ApplyColumn(workingCells, boardWidth, boardHeight, column, columnResult.UpdatedLine))
                 {
                     progressedInPass = true;
                     madeAnyProgress = true;
@@ -72,7 +72,7 @@ public static class BoardSolver
         }
 
         return new BoardSolveResult(
-            new BoardState(width, height, workingCells),
+            new BoardState(boardWidth, boardHeight, workingCells),
             HasProgress: madeAnyProgress,
             IsContradiction: false);
     }

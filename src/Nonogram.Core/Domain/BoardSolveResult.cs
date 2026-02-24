@@ -4,4 +4,5 @@ public sealed record BoardSolveResult(
     BoardState UpdatedBoard,
     bool HasProgress,
     bool IsContradiction,
-    string? ContradictionSource = null);
+    string? ContradictionSource = null
+);
