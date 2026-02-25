@@ -6,46 +6,158 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
+    <Page.KeyboardAccelerators>
+        <KeyboardAccelerator
+            Key="Z"
+            Modifiers="Control"
+            Invoked="OnUndoKeyboardAcceleratorInvoked" />
+        <KeyboardAccelerator
+            Key="Y"
+            Modifiers="Control"
+            Invoked="OnRedoKeyboardAcceleratorInvoked" />
+    </Page.KeyboardAccelerators>
+
     <Page.Resources>
-        <Style x:Key="FlatGridViewItemStyle" TargetType="GridViewItem">
-            <Setter Property="Padding" Value="0" />
-            <Setter Property="Margin" Value="0" />
-            <Setter Property="MinWidth" Value="0" />
-            <Setter Property="MinHeight" Value="0" />
-            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-            <Setter Property="VerticalContentAlignment" Value="Stretch" />
+        <Style
+            x:Key="FlatGridViewItemStyle"
+            TargetType="GridViewItem">
+            <Setter
+                Property="Padding"
+                Value="0" />
+            <Setter
+                Property="Margin"
+                Value="0" />
+            <Setter
+                Property="MinWidth"
+                Value="0" />
+            <Setter
+                Property="MinHeight"
+                Value="0" />
+            <Setter
+                Property="HorizontalContentAlignment"
+                Value="Stretch" />
+            <Setter
+                Property="VerticalContentAlignment"
+                Value="Stretch" />
         </Style>
 
-        <Style x:Key="FlatListViewItemStyle" TargetType="ListViewItem">
-            <Setter Property="Padding" Value="0" />
-            <Setter Property="Margin" Value="0" />
-            <Setter Property="MinWidth" Value="0" />
-            <Setter Property="MinHeight" Value="0" />
-            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-            <Setter Property="VerticalContentAlignment" Value="Stretch" />
-            <Setter Property="IsHitTestVisible" Value="False" />
+        <Style
+            x:Key="FlatListViewItemStyle"
+            TargetType="ListViewItem">
+            <Setter
+                Property="Padding"
+                Value="0" />
+            <Setter
+                Property="Margin"
+                Value="0" />
+            <Setter
+                Property="MinWidth"
+                Value="0" />
+            <Setter
+                Property="MinHeight"
+                Value="0" />
+            <Setter
+                Property="HorizontalContentAlignment"
+                Value="Stretch" />
+            <Setter
+                Property="VerticalContentAlignment"
+                Value="Stretch" />
+            <Setter
+                Property="IsHitTestVisible"
+                Value="False" />
         </Style>
     </Page.Resources>
 
-    <Grid Padding="16" RowSpacing="10">
+    <Grid
+        Padding="16"
+        RowSpacing="10">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
+        <CommandBar Grid.Row="0">
+            <AppBarButton
+                Label="New Puzzle"
+                Click="OnNewPuzzleClicked"
+                IsEnabled="{Binding CanStartNewPuzzle}">
+                <AppBarButton.Icon>
+                    <SymbolIcon Symbol="Refresh" />
+                </AppBarButton.Icon>
+            </AppBarButton>
+
+            <AppBarButton
+                Label="Cancel"
+                Click="OnCancelClicked"
+                IsEnabled="{Binding CanCancelGeneration}">
+                <AppBarButton.Icon>
+                    <SymbolIcon Symbol="Cancel" />
+                </AppBarButton.Icon>
+            </AppBarButton>
+
+            <AppBarSeparator />
+
+            <AppBarButton
+                Label="Undo"
+                Command="{Binding UndoCommand}">
+                <AppBarButton.Icon>
+                    <SymbolIcon Symbol="Undo" />
+                </AppBarButton.Icon>
+            </AppBarButton>
+
+            <AppBarButton
+                Label="Redo"
+                Command="{Binding RedoCommand}">
+                <AppBarButton.Icon>
+                    <SymbolIcon Symbol="Redo" />
+                </AppBarButton.Icon>
+            </AppBarButton>
+
+            <AppBarButton
+                Label="Reset"
+                Command="{Binding ResetCommand}">
+                <AppBarButton.Icon>
+                    <SymbolIcon Symbol="Refresh" />
+                </AppBarButton.Icon>
+            </AppBarButton>
+
+            <CommandBar.Content>
+                <StackPanel
+                    Orientation="Horizontal"
+                    Spacing="10"
+                    VerticalAlignment="Center">
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Text="Mode" />
+
+                    <RadioButton
+                        GroupName="InputMode"
+                        Checked="OnFillModeChecked"
+                        Content="Fill"
+                        IsChecked="{Binding IsFillModeSelected, Mode=OneWay}" />
+
+                    <RadioButton
+                        GroupName="InputMode"
+                        Checked="OnMarkEmptyModeChecked"
+                        Content="Mark Empty"
+                        IsChecked="{Binding IsMarkEmptyModeSelected, Mode=OneWay}" />
+
+                    <RadioButton
+                        GroupName="InputMode"
+                        Checked="OnEraseModeChecked"
+                        Content="Erase"
+                        IsChecked="{Binding IsEraseModeSelected, Mode=OneWay}" />
+                </StackPanel>
+            </CommandBar.Content>
+        </CommandBar>
+
         <StackPanel
-            Grid.Row="0"
+            Grid.Row="1"
             Orientation="Horizontal"
             Spacing="8">
-            <Button
-                Content="New Puzzle"
-                Click="OnNewPuzzleClicked"
-                IsEnabled="{Binding CanStartNewPuzzle}" />
-            <Button
-                Content="Cancel"
-                Click="OnCancelClicked"
-                IsEnabled="{Binding CanCancelGeneration}" />
             <ProgressRing
                 Width="18"
                 Height="18"
@@ -58,14 +170,14 @@
         </StackPanel>
 
         <TextBlock
-            Grid.Row="1"
+            Grid.Row="2"
             FontSize="16"
             FontWeight="SemiBold"
             Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
             Text="{Binding SolvedMessage}"
             Visibility="{Binding SolvedVisibility}" />
 
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="3">
             <TextBlock
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
@@ -167,11 +279,13 @@
                             x:Name="CellsGrid"
                             BorderThickness="0"
                             IsEnabled="{Binding CanInteractWithBoard}"
-                            IsItemClickEnabled="True"
+                            IsItemClickEnabled="False"
                             IsTabStop="False"
-                            ItemClick="OnCellItemClick"
                             ItemContainerStyle="{StaticResource FlatGridViewItemStyle}"
                             ItemsSource="{Binding Cells}"
+                            PointerCanceled="OnCellsGridPointerCanceled"
+                            PointerCaptureLost="OnCellsGridPointerCaptureLost"
+                            PointerReleased="OnCellsGridPointerReleased"
                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                             ScrollViewer.HorizontalScrollMode="Disabled"
                             ScrollViewer.VerticalScrollBarVisibility="Disabled"
@@ -189,15 +303,24 @@
                                     <Border
                                         Width="34"
                                         Height="34"
+                                        Background="{ThemeResource LayerFillColorDefaultBrush}"
                                         BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                                        BorderThickness="0,0,1,1">
-                                        <TextBlock
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center"
-                                            FontFamily="Consolas"
-                                            FontSize="13"
-                                            FontWeight="SemiBold"
-                                            Text="{Binding DisplayText}" />
+                                        BorderThickness="0,0,1,1"
+                                        PointerEntered="OnCellPointerEntered"
+                                        PointerPressed="OnCellPointerPressed">
+                                        <Grid>
+                                            <Border
+                                                Background="{ThemeResource TextFillColorPrimaryBrush}"
+                                                Visibility="{Binding FilledVisibility}" />
+                                            <TextBlock
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                FontSize="16"
+                                                FontWeight="SemiBold"
+                                                Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                                                Text="X"
+                                                Visibility="{Binding EmptyVisibility}" />
+                                        </Grid>
                                     </Border>
                                 </DataTemplate>
                             </GridView.ItemTemplate>

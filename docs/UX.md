@@ -30,6 +30,13 @@
 - 행/열 클루와 셀 보드를 동시에 보여주고 셀 클릭 입력(Unknown -> Filled -> Empty -> Unknown)을 지원한다.
 - 생성 결과에 정답 보드가 포함되면 현재 보드와 정답 일치 시 `Solved!` 상태를 표시한다.
 
+## Play UX v1 (Stage9)
+- 입력 모드(`Fill / MarkEmpty / Erase`)를 `Play` 상단에서 명확하게 전환할 수 있어야 한다.
+- 좌클릭/드래그는 현재 모드를 연속 적용하고, 우클릭은 `MarkEmpty`를 즉시 적용한다.
+- 드래그 1회 입력은 Undo 1회로 되돌릴 수 있어야 한다.
+- `Undo/Redo/Reset`은 항상 즉시 반영되고, 실행 직후 `Solved` 판정이 다시 계산되어야 한다.
+- 셀 상태는 Unknown(빈칸), Filled(채움), Empty(X)로 색/기호를 함께 사용해 구분한다.
+
 ## 핵심 결론
 - UX 목표는 “빠른 입력”과 “실수 복구 가능성”의 균형이다.
 - Play/Library/Generate/Settings 흐름은 단순하고 예측 가능해야 한다.
