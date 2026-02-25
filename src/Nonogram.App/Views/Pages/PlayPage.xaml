@@ -6,13 +6,205 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
-    <Grid Padding="24">
-        <StackPanel Spacing="12">
-            <TextBlock FontSize="28" FontWeight="SemiBold" Text="Play" />
+    <Page.Resources>
+        <Style x:Key="FlatGridViewItemStyle" TargetType="GridViewItem">
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="MinWidth" Value="0" />
+            <Setter Property="MinHeight" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="VerticalContentAlignment" Value="Stretch" />
+        </Style>
+
+        <Style x:Key="FlatListViewItemStyle" TargetType="ListViewItem">
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="MinWidth" Value="0" />
+            <Setter Property="MinHeight" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="VerticalContentAlignment" Value="Stretch" />
+            <Setter Property="IsHitTestVisible" Value="False" />
+        </Style>
+    </Page.Resources>
+
+    <Grid Padding="16" RowSpacing="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel
+            Grid.Row="0"
+            Orientation="Horizontal"
+            Spacing="8">
+            <Button
+                Content="New Puzzle"
+                Click="OnNewPuzzleClicked"
+                IsEnabled="{Binding CanStartNewPuzzle}" />
+            <Button
+                Content="Cancel"
+                Click="OnCancelClicked"
+                IsEnabled="{Binding CanCancelGeneration}" />
+            <ProgressRing
+                Width="18"
+                Height="18"
+                IsActive="{Binding IsGenerating}"
+                Visibility="{Binding GenerationVisibility}" />
             <TextBlock
-                Text="Placeholder UI: puzzle board, clue panels, and in-game actions will be placed here."
-                TextWrapping="WrapWholeWords" />
-            <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="Status: Placeholder only" />
+                VerticalAlignment="Center"
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                Text="{Binding StatusMessage}" />
         </StackPanel>
+
+        <TextBlock
+            Grid.Row="1"
+            FontSize="16"
+            FontWeight="SemiBold"
+            Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
+            Text="{Binding SolvedMessage}"
+            Visibility="{Binding SolvedVisibility}" />
+
+        <Grid Grid.Row="2">
+            <TextBlock
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                Text="Click New Puzzle to generate a playable board."
+                Visibility="{Binding EmptyBoardVisibility}" />
+
+            <ScrollViewer
+                HorizontalScrollBarVisibility="Auto"
+                VerticalScrollBarVisibility="Auto"
+                Visibility="{Binding BoardVisibility}">
+                <Grid
+                    Padding="0,4,4,4"
+                    ColumnSpacing="6"
+                    RowSpacing="6">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <GridView
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        HorizontalAlignment="Left"
+                        BorderThickness="0"
+                        IsItemClickEnabled="False"
+                        IsTabStop="False"
+                        ItemContainerStyle="{StaticResource FlatGridViewItemStyle}"
+                        ItemsSource="{Binding ColumnClues}"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                        ScrollViewer.HorizontalScrollMode="Disabled"
+                        ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                        ScrollViewer.VerticalScrollMode="Disabled"
+                        SelectionMode="None">
+                        <GridView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <ItemsWrapGrid
+                                    MaximumRowsOrColumns="10"
+                                    Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </GridView.ItemsPanel>
+                        <GridView.ItemTemplate>
+                            <DataTemplate>
+                                <Border
+                                    Width="34"
+                                    Height="56"
+                                    Padding="2,2,2,4">
+                                    <TextBlock
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Bottom"
+                                        FontSize="12"
+                                        Text="{Binding ClueText}"
+                                        TextAlignment="Center" />
+                                </Border>
+                            </DataTemplate>
+                        </GridView.ItemTemplate>
+                    </GridView>
+
+                    <ListView
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        HorizontalAlignment="Left"
+                        BorderThickness="0"
+                        IsHitTestVisible="False"
+                        IsTabStop="False"
+                        ItemContainerStyle="{StaticResource FlatListViewItemStyle}"
+                        ItemsSource="{Binding RowClues}"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                        ScrollViewer.HorizontalScrollMode="Disabled"
+                        ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                        ScrollViewer.VerticalScrollMode="Disabled"
+                        SelectionMode="None">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Border
+                                    MinWidth="56"
+                                    Height="34"
+                                    Padding="4,0">
+                                    <TextBlock
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        Text="{Binding ClueText}" />
+                                </Border>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
+                    <Border
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                        BorderThickness="1">
+                        <GridView
+                            x:Name="CellsGrid"
+                            BorderThickness="0"
+                            IsEnabled="{Binding CanInteractWithBoard}"
+                            IsItemClickEnabled="True"
+                            IsTabStop="False"
+                            ItemClick="OnCellItemClick"
+                            ItemContainerStyle="{StaticResource FlatGridViewItemStyle}"
+                            ItemsSource="{Binding Cells}"
+                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                            ScrollViewer.HorizontalScrollMode="Disabled"
+                            ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                            ScrollViewer.VerticalScrollMode="Disabled"
+                            SelectionMode="None">
+                            <GridView.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <ItemsWrapGrid
+                                        MaximumRowsOrColumns="10"
+                                        Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </GridView.ItemsPanel>
+                            <GridView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border
+                                        Width="34"
+                                        Height="34"
+                                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                        BorderThickness="0,0,1,1">
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            FontFamily="Consolas"
+                                            FontSize="13"
+                                            FontWeight="SemiBold"
+                                            Text="{Binding DisplayText}" />
+                                    </Border>
+                                </DataTemplate>
+                            </GridView.ItemTemplate>
+                        </GridView>
+                    </Border>
+                </Grid>
+            </ScrollViewer>
+        </Grid>
     </Grid>
 </Page>
