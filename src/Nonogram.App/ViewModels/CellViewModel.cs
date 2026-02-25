@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Microsoft.UI.Xaml;
 using Nonogram.Core.Domain;
 
 namespace Nonogram.App.ViewModels;
@@ -30,6 +31,8 @@ public sealed class CellViewModel : INotifyPropertyChanged
             _state = value;
             OnPropertyChanged();
             OnPropertyChanged(nameof(DisplayText));
+            OnPropertyChanged(nameof(FilledVisibility));
+            OnPropertyChanged(nameof(EmptyVisibility));
         }
     }
 
@@ -39,6 +42,14 @@ public sealed class CellViewModel : INotifyPropertyChanged
         CellState.Empty => "E",
         _ => "?"
     };
+
+    public Visibility FilledVisibility => _state == CellState.Filled
+        ? Visibility.Visible
+        : Visibility.Collapsed;
+
+    public Visibility EmptyVisibility => _state == CellState.Empty
+        ? Visibility.Visible
+        : Visibility.Collapsed;
 
     private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
