@@ -13,13 +13,17 @@ public static class SearchSolver
         }
 
         SearchContext context = new(maxSolutions);
-        SearchRecursive(puzzle, initialBoard, depth: 0, context);
+        SearchRecursive(
+            puzzle,
+            initialBoard,
+            depth: 0,
+            context);
 
         SearchSolveStatus status = context.SolutionsFound switch
         {
             0 => SearchSolveStatus.Contradiction,
             1 => SearchSolveStatus.Solved,
-            _ => SearchSolveStatus.MultipleSolutions
+            _ => SearchSolveStatus.MultipleSolutions,
         };
 
         return new SearchSolveResult(
@@ -29,7 +33,9 @@ public static class SearchSolver
             new SearchSolveStats(
                 context.NodesVisited,
                 context.MaxDepth,
-                context.GuessCount));
+                context.GuessCount
+            )
+        );
     }
 
     private static void SearchRecursive(

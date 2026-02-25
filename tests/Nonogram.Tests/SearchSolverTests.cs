@@ -126,7 +126,10 @@ public class SearchSolverTests
         return new PuzzleDefinition(width, height, rows, columns);
     }
 
-    private static BoardState CreateBoard(int width, int height, string[] rows)
+    private static BoardState CreateBoard(
+        int width,
+        int height,
+        string[] rows)
     {
         if (rows.Length != height)
         {
@@ -149,7 +152,7 @@ public class SearchSolverTests
                     '?' => CellState.Unknown,
                     'F' => CellState.Filled,
                     'E' => CellState.Empty,
-                    _ => throw new ArgumentException("Unsupported cell token.", nameof(rows))
+                    _ => throw new ArgumentException("Unsupported cell token.", nameof(rows)),
                 };
             }
         }
@@ -157,7 +160,9 @@ public class SearchSolverTests
         return new BoardState(width, height, cells);
     }
 
-    private static void AssertBoard(BoardState board, string[] expectedRows)
+    private static void AssertBoard(
+        BoardState board,
+        string[] expectedRows)
     {
         Assert.Equal(expectedRows.Length, board.Height);
         Assert.All(expectedRows, row => Assert.Equal(board.Width, row.Length));
@@ -171,7 +176,7 @@ public class SearchSolverTests
                     '?' => CellState.Unknown,
                     'F' => CellState.Filled,
                     'E' => CellState.Empty,
-                    _ => throw new InvalidOperationException("Unsupported expected token.")
+                    _ => throw new InvalidOperationException("Unsupported expected token."),
                 };
 
                 Assert.Equal(expected, board[row, column]);
