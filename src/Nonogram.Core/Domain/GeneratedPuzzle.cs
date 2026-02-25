@@ -11,7 +11,8 @@ public sealed record GeneratedPuzzle
         ArgumentNullException.ThrowIfNull(puzzle);
         ArgumentNullException.ThrowIfNull(stats);
 
-        if (solutionBoard is not null && solutionBoard.Length != checked(puzzle.Width * puzzle.Height))
+        if (solutionBoard is not null &&
+            solutionBoard.Length != checked(puzzle.Width * puzzle.Height))
         {
             throw new ArgumentException(
                 "Solution board size must match puzzle dimensions.",

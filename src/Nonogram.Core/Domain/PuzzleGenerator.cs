@@ -37,7 +37,10 @@ public static class PuzzleGenerator
             SolutionGrid solutionGrid = new(options.Width, options.Height, solutionCells);
             PuzzleDefinition puzzle = ClueGenerator.CreatePuzzleDefinition(solutionGrid);
             BoardState emptyBoard = CreateUnknownBoard(options.Width, options.Height);
-            SearchSolveResult solveResult = SearchSolver.Solve(puzzle, emptyBoard, maxSolutions: 2);
+            SearchSolveResult solveResult = SearchSolver.Solve(
+                puzzle,
+                emptyBoard,
+                maxSolutions: 2);
 
             if (solveResult.SolutionsFoundCount != 1)
             {

@@ -27,7 +27,9 @@ public sealed record PuzzleGenerationResult
 
     public bool IsSuccess => Puzzle is not null;
 
-    public static PuzzleGenerationResult Success(GeneratedPuzzle puzzle, int attemptCount)
+    public static PuzzleGenerationResult Success(
+        GeneratedPuzzle puzzle,
+        int attemptCount)
     {
         ArgumentNullException.ThrowIfNull(puzzle);
 

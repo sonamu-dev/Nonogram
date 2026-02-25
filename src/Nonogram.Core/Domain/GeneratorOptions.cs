@@ -35,11 +35,11 @@ public sealed record GeneratorOptions
                 "MaxAttempts must be greater than zero.");
         }
 
-        if (maxTime.HasValue && maxTime.Value < TimeSpan.Zero)
+        if (maxTime.HasValue && maxTime.Value <= TimeSpan.Zero)
         {
             throw new ArgumentOutOfRangeException(
                 nameof(maxTime),
-                "MaxTime cannot be negative.");
+                "MaxTime must be greater than zero when specified.");
         }
 
         Width = width;

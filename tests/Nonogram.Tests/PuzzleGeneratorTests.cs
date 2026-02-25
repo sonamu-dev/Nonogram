@@ -79,6 +79,28 @@ public class PuzzleGeneratorTests
         Assert.Equal(PuzzleGenerationFailureReason.MaxAttemptsReached, result.FailureReason);
     }
 
+    [Fact]
+    public void Generate_WhenCancelled_ReturnsCancelledFailureReason()
+    {
+        GeneratorOptions options = new(
+            width: 5,
+            height: 5,
+            seed: 1234,
+            targetFillRatio: 0.5,
+            maxAttempts: 100);
+        using CancellationTokenSource cancellationTokenSource = new();
+        cancellationTokenSource.Cancel();
+
+        PuzzleGenerationResult result = PuzzleGenerator.Generate(
+            options,
+            cancellationTokenSource.Token);
+
+        Assert.False(result.IsSuccess);
+        Assert.Null(result.Puzzle);
+        Assert.Equal(0, result.AttemptCount);
+        Assert.Equal(PuzzleGenerationFailureReason.Cancelled, result.FailureReason);
+    }
+
     private static BoardState CreateUnknownBoard(int width, int height)
     {
         CellState[] cells = new CellState[checked(width * height)];
